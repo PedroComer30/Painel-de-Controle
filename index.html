@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="sources/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <title>Control Vivo</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main">
+        <img src="sources/logo.png" alt="logo" id="logo">
+        <img src="sources/bnvivo.png" alt="vivo" class="bnvivo">
+        <h1 class="title">Sejá Bem-Vindo!</h1>
+      </div>
+
+      <div class="slider">
+        <div class="slides">
+          <!--Radio Buttons-->
+          <input type="radio" name="radio-btn" id="radio1" />
+          <input type="radio" name="radio-btn" id="radio2" />
+          <input type="radio" name="radio-btn" id="radio3" />
+          <input type="radio" name="radio-btn" id="radio4" />
+          <!--Fim Radio Buttons-->
+
+          <!--Slides Images-->
+          <div class="slide first">
+            <img src="sources/banner1.png" alt="imagem 1" />
+          </div>
+          <div class="slide">
+            <img src="sources/banner2.jpg" alt="imagem 2" />
+          </div>
+          <div class="slide">
+            <img src="sources/banner3.jpg" alt="imagem 3" />
+          </div>
+          <div class="slide">
+            <img src="sources/banner4.jpg" alt="imagem 4" />
+          </div>
+          <!--Final Slides Images-->
+
+          <!--Nav-->
+          <div class="nav-auto">
+            <div class="auto-btn1"></div>
+            <div class="auto-btn2"></div>
+            <div class="auto-btn3"></div>
+            <div class="auto-btn4"></div>
+          </div>
+        </div>
+
+        <div class="manual-nav">
+          <label for="radio1" class="manual-btn"></label>
+          <label for="radio2" class="manual-btn"></label>
+          <label for="radio3" class="manual-btn"></label>
+          <label for="radio4" class="manual-btn"></label>
+        </div>
+      </div>
+
+      <div class="search-btn">
+
+        <a href="calculadora.html" class="btns">
+          <img src="sources/getnet.png" alt="logo getnet" class="logobt" id="getnet">
+        </a>
+
+        <a href="planos.html" class="btns">
+          <img src="sources/planos.png" alt="logo planos" class="logobt">
+        </a>
+
+        <a href="#" class="btns">
+          <img src="sources/streaming.png" alt="logo streaming" class="logobt">
+        </a>
+      </div>
+    </div>
+
+    <div class="list">
+        <h1>Lista de tarefas</h1>
+        <input type="text" id="taskInput" placeholder="Adicione uma tarefa...">
+        <button onclick="addTask()">Adicionar</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <footer>
+      <ul>
+        <li><a href="https://jrservicos.callix.com.br/login" target="_blank"><img src="sources/callix.png" alt="callix" class="footer"></a></li>
+        <li><a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp" target="_blank"><img src="sources/receita-federal-logo-2.png" alt="receita" class="footerR"></a></li>
+        <li></li><a href="#" target="_blank"></a></li>
+      </ul>
+
+      <p>By Pedro Henrique</p>
+    </footer>
+  </body>
+
+  <script src="script.js"></script>
+</html>

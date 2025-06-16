@@ -73,8 +73,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid purple;
+}
 
-    & .netplan {
+.netplan {
         color: rgb(255, 255, 255);
         background-color: rgb(97, 0, 189);
         padding: 8px;
@@ -82,20 +83,20 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & .beneplan {
+
+.beneplan {
         color: rgb(97, 0, 189);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .iconnet {
+.iconnet {
         width: 100px;
         height: 100px;
-    }
 }
 
 .oferta-solo:hover {
@@ -117,8 +118,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid purple;
+}
 
-    & .netplan {
+.netplan {
         color: rgb(255, 255, 255);
         background-color: rgb(97, 0, 189);
         padding: 8px;
@@ -126,20 +128,19 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & .beneplan {
+.beneplan {
         color: rgb(97, 0, 189);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .iconnet {
+.iconnet {
         width: 150px;
         height: 150px;
-    }
 }
 
 .tv:hover {
@@ -161,8 +162,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid purple;
+}
 
-    & .netplan {
+.netplan {
         color: rgb(255, 255, 255);
         background-color: rgb(97, 0, 189);
         padding: 8px;
@@ -170,20 +172,19 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & .beneplan {
+.beneplan {
         color: rgb(97, 0, 189);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .iconnet {
+.iconnet {
         width: 100px;
         height: 100px;
-    }
 }
 
 .vivo-total:hover {
@@ -216,8 +217,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid rgb(189, 157, 199);
+}
 
-    & h1 {
+.stplan {
         color: rgb(97, 8, 133);
         background-color: rgb(255, 255, 255);
         padding: 2px;
@@ -225,24 +227,23 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & h2 {
+.bnst {
         color: rgb(255, 255, 255);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .st {
+.st {
         color: white;
-    }
+}
 
-    & .stm {
+.stm {
         width: 200px;
         height: 70px;
-    }
 }
 
 .netflix:hover {
@@ -264,8 +265,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid rgb(189, 157, 199);
+}
 
-    & h1 {
+.stplan {
         color: rgb(97, 8, 133);
         background-color: rgb(255, 255, 255);
         padding: 2px;
@@ -273,24 +275,23 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & h2 {
+.bnst {
         color: rgb(255, 255, 255);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .st {
+.st {
         color: white;
-    }
+}
 
-    & .stm {
+.stm {
         width: 200px;
         height: 60px;
-    }
 }
 
 .gobloplay:hover {
@@ -312,8 +313,9 @@ body {
     height: 550px;
     border-radius: 25px;
     border: 4px solid rgb(189, 157, 199);
+}
 
-    & h1 {
+.stplan {
         color: rgb(97, 8, 133);
         background-color: rgb(255, 255, 255);
         padding: 2px;
@@ -321,24 +323,23 @@ body {
         width: 220px;
         height: 35px;
         text-align: center;
-    }
+}
 
-    & h2 {
+.bnst {
         color: rgb(255, 255, 255);
-    }
+}
 
-    & li {
+li {
         font-weight: bold;
-    }
+}
 
-    & .st {
+.st {
         color: white;
-    }
+}
 
-    & .stm {
+.stm {
         width: 200px;
         height: 60px;
-    }
 }
 
 .aprime:hover {

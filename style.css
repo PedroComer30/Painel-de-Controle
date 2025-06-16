@@ -111,9 +111,8 @@ body {
   justify-content: center;
   padding: 5px;
   gap: 50px;
-}
 
-.btns {
+  & .btns {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -125,23 +124,24 @@ body {
     height: 45px;
     width: 45px;
     text-decoration: none;
-}
 
-.logobt {
+    & .logobt {
       align-items: center;
       width: 50px;
       height: 50px;
-}
+    }
 
-#getnet {
+    & #getnet {
       width: 85px;
       height: 85px;
-}
+    }
+  }
 
-.btns:hover {
+  & .btns:hover {
     transform: scale(1.1);
     border: 5px solid rgb(70, 69, 160);
     transition: .2s;
+  }
 }
 
 .list {
@@ -208,6 +208,33 @@ li span {
 
 .deleteButton {
     margin-left: 5px;
+}
+
+
+
+footer {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  margin-top: 300px;
+  color: white;
+
+  & .footer {
+    width: 100px;
+    height: 50px;
+  }
+
+  & .footerR{
+    width: 50px;
+    height: 50px;
+  }
+
+  & ul {
+    list-style-type: none;
+    align-items: center;
+  }
 }
 
 /* Botão flutuante no canto */
@@ -318,31 +345,4 @@ li span {
 
 #clearBtn:hover {
   background: #c82333;
-}
-
-
-
-footer {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  margin-top: 300px;
-  color: white;
-
-  & .footer {
-    width: 100px;
-    height: 50px;
-  }
-
-  & .footerR{
-    width: 50px;
-    height: 50px;
-  }
-
-  & ul {
-    list-style-type: none;
-    align-items: center;
-  }
 }

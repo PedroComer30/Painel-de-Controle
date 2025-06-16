@@ -108,3 +108,9 @@ function botReply(userMessage) {
     addMessage(reply, 'bot');
   }, 500);
 }
+
+const clearBtn = document.getElementById('clearBtn');
+clearBtn.addEventListener('click', () => {
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.innerHTML = ''; // Limpa todas as mensagens
+});

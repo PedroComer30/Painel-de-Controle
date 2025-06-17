@@ -220,21 +220,21 @@ footer {
   justify-content: center;
   margin-top: 300px;
   color: white;
+}
 
-  & .footer {
+.footer {
     width: 100px;
     height: 50px;
-  }
+}
 
-  & .footerR{
+.footerR{
     width: 50px;
     height: 50px;
-  }
+}
 
-  & ul {
+ul {
     list-style-type: none;
     align-items: center;
-  }
 }
 
 /* Botão flutuante no canto */

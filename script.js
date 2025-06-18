@@ -15,6 +15,38 @@ function nextImage(){
 
 }
 
+const avisos = [
+  '🗓 Quinta-feira dia 19, iremos trabalhar normalmente "recebendo 100%".',
+  '🎯 Meta de 18 vendas no mínimo para cada um!',
+  '⏰ Pausa 10 alterada para 10h10 e 15h10.'
+];
+
+let avisoAtual = 0;
+let intervalo;
+let painelVisivel = false;
+
+const btn = document.getElementById('btnMostrar');
+const painel = document.getElementById('painelAvisos');
+
+btn.addEventListener('click', () => {
+  painelVisivel = !painelVisivel;
+
+  if (painelVisivel) {
+    painel.style.display = 'block';
+    btn.textContent = 'Fechar Avisos';
+    painel.textContent = avisos[avisoAtual];
+
+    intervalo = setInterval(() => {
+      avisoAtual = (avisoAtual + 1) % avisos.length;
+      painel.textContent = avisos[avisoAtual];
+    }, 5000);
+  } else {
+    painel.style.display = 'none';
+    btn.textContent = 'Mostrar Avisos';
+    clearInterval(intervalo);
+  }
+});
+
 const tasklist = document.getElementById("taskList");
 const taskInput = document.getElementById("taskInput");
 

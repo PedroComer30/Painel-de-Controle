@@ -70,7 +70,7 @@ function editTask(button) {
     const span = li.querySelector("span");
     const newText = prompt("Editar tarefa:", span.textContent);
     if (newText !== null && newText.trim() !== "") {
-        tasks[index] = newText.trim().substring(0, 35);
+        tasks[index] = newText.trim().substring(0, 50);
         salvarTarefas();
         renderTasks();
     }

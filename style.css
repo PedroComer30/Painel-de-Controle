@@ -210,7 +210,34 @@ li span {
     margin-left: 5px;
 }
 
+#painelAvisos {
+  display: none;
+  width: 150px;
+  margin-top: 20px;
+  padding: 15px;
+  border: 2px solid #6a0dad;
+  background-color: #ede1f8;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #4b0082;
+  transition: all 0.3s ease-in-out;
+}
 
+#btnMostrar {
+  padding: 10px 15px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #6a0dad;
+  color: white;
+  border: 3px solid white;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+#btnMostrar:hover {
+  background-color: #4b0082;
+}
 
 footer {
   display: flex;

@@ -156,3 +156,14 @@ clearBtn.addEventListener('click', () => {
   const chatMessages = document.getElementById('chatMessages');
   chatMessages.innerHTML = ''; // Limpa todas as mensagens
 });
+
+//Att temporaria
+
+document.getElementById('tvButton').addEventListener('click', function() {
+    const tvContainer = document.getElementById('tvContainer');
+    if (tvContainer.style.display === 'none' || tvContainer.style.display === '') {
+        tvContainer.style.display = 'block';
+    } else {
+        tvContainer.style.display = 'none';
+    }
+});

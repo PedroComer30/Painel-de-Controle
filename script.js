@@ -50,36 +50,60 @@ btn.addEventListener('click', () => {
 const tasklist = document.getElementById("taskList");
 const taskInput = document.getElementById("taskInput");
 
+let tasks = carregarTarefas();
+renderTasks();
+
 function addTask() {
     const taskText = taskInput.value.trim();
     if (taskText !== "") {
-
         const maxText = taskText.substring(0, 35);
-
-        const li = document.createElement("li");
-        li.innerHTML = `
-            
-            <span>${maxText}</span>
-            <button class="editButton" onClick="editTask(this)">Editar</button>
-            <button class="deleteButton" onClick="deleteTask(this)">Remover</button>
-        `;
-        tasklist.appendChild(li);
+        tasks.push(maxText); // salva no array
+        salvarTarefas();
+        renderTasks();
         taskInput.value = "";
     }
 }
 
 function editTask(button) {
     const li = button.parentElement;
+    const index = Array.from(tasklist.children).indexOf(li);
     const span = li.querySelector("span");
     const newText = prompt("Editar tarefa:", span.textContent);
     if (newText !== null && newText.trim() !== "") {
-        span.textContent = newText.trim();
+        tasks[index] = newText.trim().substring(0, 35);
+        salvarTarefas();
+        renderTasks();
     }
 }
 
 function deleteTask(button) {
     const li = button.parentElement;
-    tasklist.removeChild(li);
+    const index = Array.from(tasklist.children).indexOf(li);
+    tasks.splice(index, 1);
+    salvarTarefas();
+    renderTasks();
+}
+
+function salvarTarefas() {
+    localStorage.setItem("listaTarefas", JSON.stringify(tasks));
+}
+
+function carregarTarefas() {
+    const salvas = localStorage.getItem("listaTarefas");
+    return salvas ? JSON.parse(salvas) : [];
+}
+
+function renderTasks() {
+    tasklist.innerHTML = "";
+    tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <span>${task}</span>
+            <button class="editButton" onClick="editTask(this)">Editar</button>
+            <button class="deleteButton" onClick="deleteTask(this)">Remover</button>
+        `;
+        tasklist.appendChild(li);
+    });
 }
 
 const openChatBtn = document.getElementById('openChatBtn');

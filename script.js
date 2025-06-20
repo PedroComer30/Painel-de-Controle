@@ -110,6 +110,28 @@ const openChatBtn = document.getElementById('openChatBtn');
 const chatContainer = document.getElementById('chatContainer');
 const headerBotIcon = document.querySelector('#chatHeader .headerBotIcon');
 
+// Função para exibir a mensagem de boas-vindas no chat
+function mostrarMensagemBoasVindas() {
+  addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
+}
+
+// Exemplo: chamar essa função quando o chat abrir ou ao limpar mensagens
+// Ao abrir o chat pela primeira vez:
+if (!chatOpenedBefore) {
+  mostrarMensagemBoasVindas();
+  chatOpenedBefore = true;
+}
+
+// Ou após limpar o chat:
+document.getElementById('clearBtn').addEventListener('click', () => {
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.innerHTML = '';
+  setTimeout(() => {
+    mostrarMensagemBoasVindas();
+  }, 300);
+});
+
+
 openChatBtn.addEventListener('click', () => {
   const isHidden = chatContainer.classList.contains('hidden');
 

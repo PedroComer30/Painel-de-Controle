@@ -170,7 +170,7 @@ function botReply(userMessage) {
   } else if (msgLower.includes('móvel') || msgLower.includes('movel')) {
     reply = 'O móvel se tiver vendido a fibra, pode subir os dois juntos no sgv, agora se o cliente não quiser a fibra, então pode indicar para qualquer vendedor de móvel.';
   } else if (msgLower.includes('spam') && msgLower.includes('bloqueio')) {
-    reply = 'O bloqueio de spam, serve para bloquear números que ligam com frequencia, caso seu cliente tenha ativado, ele não consegue atender a auditoria, para saber se tem spam, um teste comum é ligar pelo Callix, se cair caixa postal na de primeira, provavelmente o spam está ativo.';
+    reply = 'O bloqueio de spam, serve para bloquear números que ligam com frequencia, caso seu cliente tenha ativado, ele não consegue atender a auditoria, para saber se tem spam, um teste comum é ligar pelo Callix, se cair na caixa postal de primeira, provavelmente o spam está ativo.';
   } else if (msgLower.includes('dados') && msgLower.includes('informações') && msgLower.includes('fechamento')) {
     reply = 'Os dados que precisamos para subir uma venda em sistema são: CNPJ, Email, 2 Números para contato e endereço para instalação.';
   } else if (msgLower.includes('fidelidade') && msgLower.includes('multa') && msgLower.includes('carencia')) {
@@ -204,15 +204,4 @@ const clearBtn = document.getElementById('clearBtn');
 clearBtn.addEventListener('click', () => {
   const chatMessages = document.getElementById('chatMessages');
   chatMessages.innerHTML = ''; // Limpa todas as mensagens
-});
-
-//Att temporaria
-
-document.getElementById('tvButton').addEventListener('click', function() {
-    const tvContainer = document.getElementById('tvContainer');
-    if (tvContainer.style.display === 'none' || tvContainer.style.display === '') {
-        tvContainer.style.display = 'block';
-    } else {
-        tvContainer.style.display = 'none';
-    }
 });

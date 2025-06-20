@@ -110,43 +110,46 @@ const openChatBtn = document.getElementById('openChatBtn');
 const chatContainer = document.getElementById('chatContainer');
 const headerBotIcon = document.querySelector('#chatHeader .headerBotIcon');
 
-// Função para exibir a mensagem de boas-vindas no chat
+let chatOpenedBefore = false;
+
+// Função para adicionar mensagens no chat
+function addMessage(message, sender) {
+  const chat = document.getElementById('chatMessages');
+  const msg = document.createElement('div');
+  msg.classList.add('message', sender);
+  msg.textContent = message;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Função para exibir mensagem de boas-vindas
 function mostrarMensagemBoasVindas() {
   addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
 }
 
-// Exemplo: chamar essa função quando o chat abrir ou ao limpar mensagens
-// Ao abrir o chat pela primeira vez:
-if (!chatOpenedBefore) {
-  mostrarMensagemBoasVindas();
-  chatOpenedBefore = true;
-}
-
-// Ou após limpar o chat:
-document.getElementById('clearBtn').addEventListener('click', () => {
-  const chatMessages = document.getElementById('chatMessages');
-  chatMessages.innerHTML = '';
-  setTimeout(() => {
-    mostrarMensagemBoasVindas();
-  }, 300);
-});
-
-
+// Abrir/fechar chat e enviar mensagem de boas-vindas na primeira abertura
 openChatBtn.addEventListener('click', () => {
   const isHidden = chatContainer.classList.contains('hidden');
 
   if (isHidden) {
     chatContainer.classList.remove('hidden');
     headerBotIcon.classList.add('glow');
+
+    if (!chatOpenedBefore) {
+      setTimeout(() => {
+        mostrarMensagemBoasVindas();
+      }, 300);
+      chatOpenedBefore = true;
+    }
   } else {
     chatContainer.classList.add('hidden');
     headerBotIcon.classList.remove('glow');
   }
 });
 
-// Envio de mensagens
+// Envio de mensagem pelo botão ou Enter
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
-document.getElementById('userInput').addEventListener('keypress', function(e) {
+document.getElementById('userInput').addEventListener('keypress', e => {
   if (e.key === 'Enter') sendMessage();
 });
 
@@ -160,52 +163,39 @@ function sendMessage() {
   botReply(message);
 }
 
-function addMessage(message, sender) {
-  const chat = document.getElementById('chatMessages');
-  const msg = document.createElement('div');
-  msg.classList.add('message', sender);
-  msg.textContent = message;
-  chat.appendChild(msg);
-  chat.scrollTop = chat.scrollHeight;
-}
-
 function botReply(userMessage) {
   const msg = userMessage.toLowerCase();
   let reply;
 
-  const msgLower = msg.toLowerCase();
-
-  // Respostas genéricas novas
-  if (msgLower.includes('oi') || msgLower.includes('olá') || msgLower.includes('opa')) {
+  if (msg.includes('oi') || msg.includes('olá') || msg.includes('opa')) {
     reply = 'Olá! Como posso ajudar você hoje?';
-  } else if (msgLower.includes('tudo bem') || msgLower.includes('como vai')) {
+  } else if (msg.includes('tudo bem') || msg.includes('como vai')) {
     reply = 'Estou bem, obrigado! E você?';
-  } else if (msgLower.includes('que dia é hoje') || msgLower.includes('data de hoje')) {
+  } else if (msg.includes('que dia é hoje') || msg.includes('data de hoje')) {
     const hoje = new Date();
     reply = `Hoje é dia ${hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}.`;
-  } else if (msgLower.includes('quantos graus') || msgLower.includes('temperatura') || msgLower.includes('tempo')) {
+  } else if (msg.includes('quantos graus') || msg.includes('temperatura') || msg.includes('tempo')) {
     reply = 'Desculpe, não tenho acesso à temperatura atual, mas posso ajudar em outras dúvidas!';
-  } else if (msgLower.includes('586')) {
+  } else if (msg.includes('586')) {
     reply = 'É quando o endereço não foi cadastrado no smart, é comum acontecer quando a casa é nova ou se as últimas fotos no Google forem antigas.';
-  } else if (msgLower.includes('mundial') || msgLower.includes('palmeiras')) {
+  } else if (msg.includes('mundial') || msg.includes('palmeiras')) {
     reply = 'Não, o Palmeiras não tem mundial. 51 é pinga!';
-  } else if (msgLower.includes('móvel') || msgLower.includes('movel')) {
+  } else if (msg.includes('móvel') || msg.includes('movel')) {
     reply = 'O móvel se tiver vendido a fibra, pode subir os dois juntos no sgv, agora se o cliente não quiser a fibra, então pode indicar para qualquer vendedor de móvel.';
-  } else if (msgLower.includes('spam') || msgLower.includes('bloqueio')) {
-    reply = 'O bloqueio de spam, serve para bloquear números que ligam com frequencia, caso seu cliente tenha ativado, ele não consegue atender a auditoria, para saber se tem spam, um teste comum é ligar pelo Callix, se cair na caixa postal de primeira, provavelmente o spam está ativo.';
-  } else if (msgLower.includes('dados') || msgLower.includes('informações') || msgLower.includes('fechamento')) {
+  } else if (msg.includes('spam') || msg.includes('bloqueio')) {
+    reply = 'O bloqueio de spam serve para bloquear números que ligam com frequência, caso seu cliente tenha ativado, ele não consegue atender a auditoria.';
+  } else if (msg.includes('dados') || msg.includes('informações') || msg.includes('fechamento')) {
     reply = 'Os dados que precisamos para subir uma venda em sistema são: CNPJ, Email, 2 Números para contato e endereço para instalação.';
-  } else if (msgLower.includes('fidelidade') || msgLower.includes('multa') || msgLower.includes('carencia')) {
+  } else if (msg.includes('fidelidade') || msg.includes('multa') || msg.includes('carencia')) {
     reply = 'Sim, temos fidelidade de 24 meses, porém ela serve para manter o preço fixo, em caso de mudança de endereço e insatisfação com o produto, pode ser cancelado sem custos.';
-  } else if (msgLower.includes('comissão')) {
-    reply = 'As comissões que você deve considerar, são a partir de 12 vendas: 12 Vendas = R$600, 18 vendas = R$2.340, 21 vendas = R$3.150, 26 vendas = R$4940 p/cima.';
-  } else if (msgLower.includes('cnpj') || msgLower.includes('empresa')) {
+  } else if (msg.includes('comissão')) {
+    reply = 'As comissões que você deve considerar, são a partir de 12 vendas: 12 Vendas = R$600, 18 vendas = R$2.340, 21 vendas = R$3.150, 26 vendas = R$4.940 para cima.';
+  } else if (msg.includes('cnpj') || msg.includes('empresa')) {
     reply = 'O CNPJ da empresa para abrir o SGV é: 17062925000160';
   } else {
     reply = 'Desculpe, não posso responder isso ainda! Faça outra pergunta.';
   }
 
-  // Adiciona balão com "digitando..."
   const chat = document.getElementById('chatMessages');
   const typingBubble = document.createElement('div');
   typingBubble.classList.add('message', 'bot');
@@ -217,15 +207,18 @@ function botReply(userMessage) {
   chat.appendChild(typingBubble);
   chat.scrollTop = chat.scrollHeight;
 
-  // Substitui pelos texto final após 1 segundo
   setTimeout(() => {
     chat.removeChild(typingBubble);
     addMessage(reply, 'bot');
   }, 1000);
 }
 
-const clearBtn = document.getElementById('clearBtn');
-clearBtn.addEventListener('click', () => {
+// Limpar chat e mostrar mensagem de boas-vindas de novo
+document.getElementById('clearBtn').addEventListener('click', () => {
   const chatMessages = document.getElementById('chatMessages');
-  chatMessages.innerHTML = ''; // Limpa todas as mensagens
+  chatMessages.innerHTML = '';
+
+  setTimeout(() => {
+    mostrarMensagemBoasVindas();
+  }, 300);
 });

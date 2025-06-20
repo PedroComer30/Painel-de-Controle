@@ -177,6 +177,8 @@ function botReply(userMessage) {
     reply = 'Sim, temos fidelidade de 24 meses, porém ela serve para manter o preço fixo, em caso de mudança de endereço e insatisfação com o produto, pode ser cancelado sem custos.';
   } else if (msgLower.includes('comissão')) {
     reply = 'As comissões que você deve considerar, são a partir de 12 vendas: 12 Vendas = R$600, 18 vendas = R$2.340, 21 vendas = R$3.150, 26 vendas = R$4940 p/cima.';
+  } else if (msgLower.includes('cnpj') || msgLower.includes('empresa')) {
+    reply = 'O CNPJ da empresa para abri o SGV é: 17062925000160';
   } else {
     reply = 'Desculpe, não posso responder isso ainda! Faça outra pergunta.';
   }

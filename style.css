@@ -264,7 +264,7 @@ ul {
     align-items: center;
 }
 
-/* Botão flutuante no canto */
+/* Botão flutuante */
 #openChatBtn {
   position: fixed;
   bottom: 20px;
@@ -283,15 +283,29 @@ ul {
   transition: background-color 0.3s ease;
   padding: 0;
 }
-
 #openChatBtn:hover {
   background-color: #8d2b85;
 }
-
 #openChatBtn svg {
   pointer-events: none;
 }
 
+/* Notificação */
+#chatNotification {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+  display: none;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+}
+#openChatBtn.has-notification #chatNotification {
+  display: block;
+}
 
 /* Container do chat */
 #chatContainer {
@@ -307,10 +321,7 @@ ul {
   flex-direction: column;
   box-shadow: 0 0 15px rgba(0,0,0,0.3);
   overflow: hidden;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 1;
 }
-
 .hidden {
   display: none !important;
 }
@@ -324,12 +335,10 @@ ul {
   text-align: center;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  overflow: visible;
 }
 .headerBotIcon {
   width: 48px;
@@ -337,15 +346,12 @@ ul {
   background-image: url('https://cdn-icons-png.flaticon.com/512/4712/4712104.png');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   border-radius: 50%;
   border: 2px solid white;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  transition: box-shadow 0.3s ease;
 }
 #chatHeader span {
   font-size: 20px;
-  margin: 0;
 }
 
 /* Animação de brilho */
@@ -371,8 +377,6 @@ ul {
   flex-direction: column;
   gap: 10px;
 }
-
-/* Balões */
 .message {
   position: relative;
   max-width: 75%;
@@ -381,8 +385,6 @@ ul {
   display: inline-block;
   word-wrap: break-word;
 }
-
-/* Mensagem do usuário (direita) */
 .user {
   align-self: flex-end;
   background-color: #e1bee7;
@@ -390,8 +392,6 @@ ul {
   border-bottom-right-radius: 0;
   text-align: right;
 }
-
-/* Mensagem do bot (esquerda) com ícone */
 .bot {
   align-self: flex-start;
   background-color: #fce4ec;
@@ -400,7 +400,7 @@ ul {
   text-align: left;
   padding-top: 30px;
   position: relative;
-  padding-left: 45px; /* espaço para o ícone */
+  padding-left: 45px;
 }
 .bot::before {
   content: '';
@@ -424,13 +424,12 @@ ul {
   padding: 0 10px;
   cursor: pointer;
   font-size: 16px;
-  transition: background 0.3s;
 }
 #clearBtn:hover {
   background: #c82333;
 }
 
-/* Área de input e botões */
+/* Input e botões */
 #chatInputArea {
   display: flex;
   border-top: 1px solid #ccc;
@@ -447,13 +446,12 @@ ul {
   background: #4c075a;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 #chatInputArea button:hover {
   background-color: #9e1f93;
 }
 
-/* Animação dos pontinhos digitando */
+/* Digitando... */
 .typing {
   display: inline-block;
   position: relative;
@@ -468,25 +466,11 @@ ul {
   border-radius: 50%;
   animation: typingAnimation 1.2s infinite ease-in-out;
 }
-.typing span:nth-child(1) {
-  left: 0px;
-  animation-delay: 0s;
-}
-.typing span:nth-child(2) {
-  left: 12px;
-  animation-delay: 0.2s;
-}
-.typing span:nth-child(3) {
-  left: 24px;
-  animation-delay: 0.4s;
-}
+.typing span:nth-child(1) { left: 0px; animation-delay: 0s; }
+.typing span:nth-child(2) { left: 12px; animation-delay: 0.2s; }
+.typing span:nth-child(3) { left: 24px; animation-delay: 0.4s; }
+
 @keyframes typingAnimation {
-  0%, 80%, 100% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  40% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
 }

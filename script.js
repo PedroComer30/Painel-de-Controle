@@ -165,15 +165,15 @@ function botReply(userMessage) {
     reply = 'Desculpe, não tenho acesso à temperatura atual, mas posso ajudar em outras dúvidas!';
   } else if (msgLower.includes('586')) {
     reply = 'É quando o endereço não foi cadastrado no smart, é comum acontecer quando a casa é nova ou se as últimas fotos no Google forem antigas.';
-  } else if (msgLower.includes('mundial') && msgLower.includes('palmeiras')) {
+  } else if (msgLower.includes('mundial') || msgLower.includes('palmeiras')) {
     reply = 'Não, o Palmeiras não tem mundial. 51 é pinga!';
   } else if (msgLower.includes('móvel') || msgLower.includes('movel')) {
     reply = 'O móvel se tiver vendido a fibra, pode subir os dois juntos no sgv, agora se o cliente não quiser a fibra, então pode indicar para qualquer vendedor de móvel.';
-  } else if (msgLower.includes('spam') && msgLower.includes('bloqueio')) {
+  } else if (msgLower.includes('spam') || msgLower.includes('bloqueio')) {
     reply = 'O bloqueio de spam, serve para bloquear números que ligam com frequencia, caso seu cliente tenha ativado, ele não consegue atender a auditoria, para saber se tem spam, um teste comum é ligar pelo Callix, se cair na caixa postal de primeira, provavelmente o spam está ativo.';
-  } else if (msgLower.includes('dados') && msgLower.includes('informações') && msgLower.includes('fechamento')) {
+  } else if (msgLower.includes('dados') || msgLower.includes('informações') || msgLower.includes('fechamento')) {
     reply = 'Os dados que precisamos para subir uma venda em sistema são: CNPJ, Email, 2 Números para contato e endereço para instalação.';
-  } else if (msgLower.includes('fidelidade') && msgLower.includes('multa') && msgLower.includes('carencia')) {
+  } else if (msgLower.includes('fidelidade') || msgLower.includes('multa') || msgLower.includes('carencia')) {
     reply = 'Sim, temos fidelidade de 24 meses, porém ela serve para manter o preço fixo, em caso de mudança de endereço e insatisfação com o produto, pode ser cancelado sem custos.';
   } else if (msgLower.includes('comissão')) {
     reply = 'As comissões que você deve considerar, são a partir de 12 vendas: 12 Vendas = R$600, 18 vendas = R$2.340, 21 vendas = R$3.150, 26 vendas = R$4940 p/cima.';

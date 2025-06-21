@@ -111,7 +111,6 @@ const chatContainer = document.getElementById('chatContainer');
 const headerBotIcon = document.querySelector('#chatHeader .headerBotIcon');
 const chatNotification = document.getElementById('chatNotification');
 let pendingReply = false;
-let chatOpenedBefore = false;
 
 openChatBtn.addEventListener('click', () => {
   const isHidden = chatContainer.classList.contains('hidden');
@@ -121,12 +120,10 @@ openChatBtn.addEventListener('click', () => {
     headerBotIcon.classList.add('glow');
     openChatBtn.classList.remove('has-notification');
 
-    if (!chatOpenedBefore) {
-      setTimeout(() => {
-        addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
-      }, 300);
-      chatOpenedBefore = true;
-    }
+    // Mensagem de boas-vindas sempre que abrir o chat
+    setTimeout(() => {
+      addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
+    }, 300);
   } else {
     chatContainer.classList.add('hidden');
     headerBotIcon.classList.remove('glow');
@@ -160,7 +157,20 @@ function addMessage(message, sender) {
   const chat = document.getElementById('chatMessages');
   const msg = document.createElement('div');
   msg.classList.add('message', sender);
-  msg.textContent = message;
+
+  if (sender === 'bot' && typeof message === 'object' && message.type === 'link') {
+    // Se for resposta com link, cria link clicável
+    const linkEl = document.createElement('a');
+    linkEl.href = message.url;
+    linkEl.target = '_blank';
+    linkEl.rel = 'noopener noreferrer';
+    linkEl.textContent = message.text;
+    linkEl.style.color = '#a5006e';
+    msg.appendChild(linkEl);
+  } else {
+    msg.textContent = message;
+  }
+
   chat.appendChild(msg);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -168,6 +178,7 @@ function addMessage(message, sender) {
 function botReply(userMessage) {
   const msg = userMessage.toLowerCase();
   let reply;
+  let isLinkReply = false;
 
   if (msg.includes('oi') || msg.includes('olá') || msg.includes('opa')) {
     reply = 'Olá! Como posso ajudar você hoje?';
@@ -196,6 +207,32 @@ function botReply(userMessage) {
     reply = 'Comissões: 12 vendas = R$600, 18 = R$2.340, 21 = R$3.150, 26+ = R$4.940+';
   } else if (msg.includes('cnpj') || msg.includes('empresa')) {
     reply = 'CNPJ para SGV: 17062925000160';
+  } else if (msg.includes('plano') || msg.includes('tv') || msg.includes('canal') || msg.includes('canais')) {
+    showImagesWithDownload([
+      {
+        url: 'images/pacote1.jpg',
+        nome: 'Pacote-TV-Básico.jpg'
+      },
+      {
+        url: 'images/pacote2.jpg',
+        nome: 'Pacote-TV-Premium.jpg'
+      }
+    ]);
+    pendingReply = false;
+    openChatBtn.classList.remove('has-notification');
+    return;
+  } else if (msg.includes('smart')) {
+    reply = { type: 'link', text: 'Smart - https://www.smart.com.br', url: 'https://vivovendas.vivo.com.br/sales_ext/start.swe?SWECmd=GotoView&SWEView=NV+Dealer+Home+Page+View&SWERF=1&SWEHo=vivovendas.vivo.com.br&SWEBU=1&SWEApplet0=NV+Sales+Opportunity+List+Applet+-+Home+Page&SWERowId0=8-7IBK00I4' };
+    isLinkReply = true;
+  } else if (msg.includes('callix')) {
+    reply = { type: 'link', text: 'Callix - https://www.callix.com.br', url: 'https://jrservicos.callix.com.br/login' };
+    isLinkReply = true;
+  } else if (msg.includes('simplifique')) {
+    reply = { type: 'link', text: 'Simplifique - https://www.simplifique.com.br', url: 'https://autenticaint.vivo.com.br/LoginCorp/?bmctx=D3346598D37D25323F24C459B0AA627D72F11002ACA4C6E5F0DC260DDCE7E518&contextType=external&username=string&challenge_topaz=true&challenge_url=https%3A%2F%2Fautenticaint.vivo.com.br%2FLoginCorp%2F&password=secure_string&request_id=-1918812876242615029&authn_try_count=0&locale=pt_BR&resource_url=https%253A%252F%252Fautenticaint.vivo.com.br%252Fms_oauth%252Foauth2%252Fui%252Fvivooauthservice%252Fshowconsent%253Fresponse_type%253Dcode%2526client_id%253D5598f3b889dbd39d9320bfb08954ead8%2526redirect_uri%253Dhttps%25253A%25252F%25252Fsimplifiquevivoemp.com.br%25252Foauth-telefonica.aspx%2526scope%253DSIMPLIFIQUEProfile.me%2526oracle_client_name%253DSIMPLIFIQUE' };
+    isLinkReply = true;
+  } else if (msg.includes('infob2b')) {
+    reply = { type: 'link', text: 'Infob2b - https://www.infob2b.com.br', url: 'https://autenticaint.vivo.com.br/LoginCorp/?bmctx=3125F162882003CD1627B3AE727AEEB366CA6E0DA885B6042DEAF37E3B3193DA&contextType=external&username=string&challenge_topaz=true&challenge_url=https%3A%2F%2Fautenticaint.vivo.com.br%2FLoginCorp%2F&password=secure_string&request_id=-1278206927163946539&authn_try_count=0&locale=pt_BR&resource_url=https%253A%252F%252Fautenticaint.vivo.com.br%252Fms_oauth%252Foauth2%252Fui%252Fvivooauthservice%252Fshowconsent%253Fresponse_type%253Dcode%2526client_id%253D7631b26b13f248ec932bab0b7ac653f3%2526redirect_uri%253Dhttps%25253A%25252F%25252Fwww.portalinfob2b.com.br%25252Flogin%2526scope%253DAPIManager.Default%252BPortalInfoB2B.Default%2526oracle_client_name%253DPortalInfoB2B' };
+    isLinkReply = true;
   } else {
     reply = 'Desculpe, não posso responder isso ainda! Faça outra pergunta.';
   }
@@ -213,12 +250,52 @@ function botReply(userMessage) {
 
   setTimeout(() => {
     chat.removeChild(typingBubble);
-    addMessage(reply, 'bot');
+    if (isLinkReply) {
+      addMessage(reply, 'bot');
+    } else {
+      addMessage(reply, 'bot');
+    }
     pendingReply = false;
     openChatBtn.classList.remove('has-notification');
   }, 1000);
 }
 
+function showImagesWithDownload(images) {
+  const chat = document.getElementById('chatMessages');
+
+  images.forEach(image => {
+    const container = document.createElement('div');
+    container.classList.add('message', 'bot');
+    container.style.flexDirection = 'column';
+
+    const img = document.createElement('img');
+    img.src = image.url;
+    img.alt = image.nome;
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '10px';
+    img.style.marginBottom = '5px';
+
+    const downloadBtn = document.createElement('a');
+    downloadBtn.href = image.url;
+    downloadBtn.download = image.nome;
+    downloadBtn.textContent = '📥 Baixar imagem';
+    downloadBtn.style.color = '#a5006e';
+    downloadBtn.style.textDecoration = 'underline';
+    downloadBtn.style.fontSize = '14px';
+
+    container.appendChild(img);
+    container.appendChild(downloadBtn);
+    chat.appendChild(container);
+  });
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
 document.getElementById('clearBtn').addEventListener('click', () => {
-  document.getElementById('chatMessages').innerHTML = '';
+  const chat = document.getElementById('chatMessages');
+  chat.innerHTML = '';
+  setTimeout(() => {
+    addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
+  }, 300);
 });
+

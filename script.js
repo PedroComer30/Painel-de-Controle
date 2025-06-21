@@ -292,10 +292,5 @@ function showImagesWithDownload(images) {
 }
 
 document.getElementById('clearBtn').addEventListener('click', () => {
-  const chat = document.getElementById('chatMessages');
-  chat.innerHTML = '';
-  setTimeout(() => {
-    addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
-  }, 300);
+  document.getElementById('chatMessages').innerHTML = '';
 });
-

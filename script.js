@@ -175,11 +175,186 @@ function addMessage(message, sender) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+// Variáveis de controle para os dois fluxos
+let creatingConfirmation = false;
+let confirmationStep = 0;
+let confirmationData = {
+  plano: '',
+  telefone: '',
+  tipo: '',
+  cnpj: ''
+};
+
+let fillingChecklist = false;
+let checklistStep = 0;
+let checklistData = {
+  cpf: '',
+  rg: '',
+  cnpj: '',
+  telefone: '',
+  email: '',
+  tipoVenda: '',
+  numeroLinha: '',
+  plano: '',
+  valor: '',
+  quantidadeLinhas: ''
+};
+
 function botReply(userMessage) {
   const msg = userMessage.toLowerCase();
   let reply;
   let isLinkReply = false;
 
+  // Se o usuário escreveu "preencha" mas não "confirmação" nem "checklist", pergunta o que preencher
+  if (msg.includes('preencha') && !msg.includes('confirmação') && !msg.includes('checklist')) {
+    return 'O que você deseja preencher? Opções:\n1. Confirmação\n2. Checklist móvel';
+  }
+
+  // Inicia o fluxo de confirmação
+  if (msg.includes('monte') && msg.includes('confirmação')) {
+    creatingConfirmation = true;
+    confirmationStep = 1;
+    return 'Qual o plano contratado? (ex: 6GB +10GB bônus + 20GB bônus)';
+  }
+
+  // Inicia o fluxo do checklist móvel direto se digitar só "checklist"
+  if (msg.includes('checklist') && !creatingConfirmation) {
+    fillingChecklist = true;
+    checklistStep = 1;
+    return 'Informe o CPF:';
+  }
+
+  // Se usuário respondeu à pergunta de qual checklist quer preencher
+  if (!creatingConfirmation && !fillingChecklist) {
+    if (msg === '1' || msg === 'confirmação') {
+      creatingConfirmation = true;
+      confirmationStep = 1;
+      return 'Qual o plano contratado? (ex: 6GB +10GB bônus + 20GB bônus)';
+    } else if (msg === '2' || msg === 'checklist móvel') {
+      fillingChecklist = true;
+      checklistStep = 1;
+      return 'Informe o CPF:';
+    }
+  }
+
+  // Fluxo guiado: Confirmação
+  if (creatingConfirmation) {
+    if (confirmationStep === 1) {
+      confirmationData.plano = userMessage;
+      reply = 'Qual o número de telefone? (ex: 11 91234-5678)';
+      confirmationStep++;
+    } else if (confirmationStep === 2) {
+      confirmationData.telefone = userMessage;
+      reply = 'Qual o tipo? (Ex: Portabilidade)';
+      confirmationStep++;
+    } else if (confirmationStep === 3) {
+      confirmationData.tipo = userMessage;
+      reply = 'Informe o CNPJ:';
+      confirmationStep++;
+    } else if (confirmationStep === 4) {
+      confirmationData.cnpj = userMessage;
+      reply = `Só confirmando o plano contratado é:\n` +
+              `1 ${confirmationData.tipo.toUpperCase()} nos números ${confirmationData.telefone} com plano de ${confirmationData.plano}\n` +
+              `VALOR: 39,99\n\n` +
+              `Vai ser feita a contratação de uma *${confirmationData.tipo.toUpperCase()}*\n\n` +
+              `Você está ciente que é necessário efetuar a compra do chip para fazer a ativação?\n\n` +
+              `CNPJ: ${confirmationData.cnpj}\n` +
+              `Posso confirmar?`;
+
+      // Reset
+      creatingConfirmation = false;
+      confirmationStep = 0;
+      confirmationData = { plano: '', telefone: '', tipo: '', cnpj: '' };
+    }
+    return reply;
+  }
+
+  // Fluxo guiado: Checklist móvel
+  if (fillingChecklist) {
+    if (checklistStep === 1) {
+      checklistData.cpf = userMessage;
+      reply = 'Informe o RG:';
+      checklistStep++;
+    } else if (checklistStep === 2) {
+      checklistData.rg = userMessage;
+      reply = 'Informe o CNPJ:';
+      checklistStep++;
+    } else if (checklistStep === 3) {
+      checklistData.cnpj = userMessage;
+      reply = 'Informe o telefone:';
+      checklistStep++;
+    } else if (checklistStep === 4) {
+      checklistData.telefone = userMessage;
+      reply = 'Informe o email:';
+      checklistStep++;
+    } else if (checklistStep === 5) {
+      checklistData.email = userMessage;
+      reply = 'Qual o tipo de venda? (ex: Número Novo, Portabilidade, Portabilidade c/ Transf. Titularidade, Migração)';
+      checklistStep++;
+    } else if (checklistStep === 6) {
+      checklistData.tipoVenda = userMessage;
+      reply = 'Número da linha:';
+      checklistStep++;
+    } else if (checklistStep === 7) {
+      checklistData.numeroLinha = userMessage;
+      reply = 'Plano:';
+      checklistStep++;
+    } else if (checklistStep === 8) {
+      checklistData.plano = userMessage;
+      reply = 'Valor:';
+      checklistStep++;
+    } else if (checklistStep === 9) {
+      checklistData.valor = userMessage;
+      reply = 'Quantidade de linhas:';
+      checklistStep++;
+    } else if (checklistStep === 10) {
+      checklistData.quantidadeLinhas = userMessage;
+
+      // Monta o checklist final
+      reply = `Checklist Móvel:\n\n` +
+              `NOME REPRESENTANTE LEGAL:\n` +
+              `CPF: ${checklistData.cpf}\n` +
+              `RG: ${checklistData.rg}\n` +
+              `CNPJ: ${checklistData.cnpj}\n` +
+              `TELEFONE: ${checklistData.telefone}\n` +
+              `EMAIL: ${checklistData.email}\n` +
+              `Tipo de Venda: ( ) Número Novo ( ) Portabilidade ( ) Portabilidade c/ Transf. Titularidade ( ) Migração\n`;
+
+      const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
+      const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
+      tipos.forEach(tipo => {
+        const marcado = tipo.toLowerCase() === tipoMinusculo ? 'x' : ' ';
+        reply += `(${marcado}) ${tipo} `;
+      });
+
+      reply += `\n\nCLIENTE CIENTE DA COMPRA DO CHIP: SIM (x) NÃO ()\n\n` +
+               `Número da(s) linha(s): ${checklistData.numeroLinha}\n` +
+               `Plano: ${checklistData.plano}\n` +
+               `Valor: ${checklistData.valor}\n\n` +
+               `Quantidade de Linha(s): ${checklistData.quantidadeLinhas}\n` +
+               `Campanha: AVULSO\n` +
+               `Vencimento: 26`;
+
+      // Reset
+      fillingChecklist = false;
+      checklistStep = 0;
+      checklistData = {
+        cpf: '',
+        rg: '',
+        cnpj: '',
+        telefone: '',
+        email: '',
+        tipoVenda: '',
+        numeroLinha: '',
+        plano: '',
+        valor: '',
+        quantidadeLinhas: ''
+      };
+    }
+    return reply;
+  }
+
+  // Perguntas e respostas fixas comuns do seu chatbot
   if (msg.includes('oi') || msg.includes('olá') || msg.includes('opa')) {
     reply = 'Olá! Como posso ajudar você hoje?';
   } else if (msg.includes('tudo bem') || msg.includes('como vai')) {
@@ -199,28 +374,25 @@ function botReply(userMessage) {
     reply = 'O móvel se tiver vendido a fibra, pode subir os dois juntos no sgv...';
   } else if (msg.includes('spam') || msg.includes('bloqueio')) {
     reply = 'O bloqueio de spam serve para bloquear números que ligam com frequência...';
-  } else if (msg.includes('dados') || msg.includes('informações') || msg.includes('fechamento')) {
-    reply = 'Precisamos de CNPJ, Email, 2 telefones e endereço para instalação.';
+  } else if (msg.includes('dados') || msg.includes('documentos') || msg.includes('informações') || msg.includes('fechamento')) {
+    reply = `Para portabilidade eu só preciso:\n
+- foto do documento RG ou CNH do responsável da linha e do CNPJ\n
+- fatura do plano atual\n
+- email para enviar o contrato`;
   } else if (msg.includes('fidelidade') || msg.includes('multa') || msg.includes('carencia')) {
     reply = 'Temos fidelidade de 24 meses, mas há exceções para cancelamento.';
   } else if (msg.includes('comissão')) {
     reply = 'Comissões: 12 vendas = R$600, 18 = R$2.340, 21 = R$3.150, 26+ = R$4.940+';
   } else if (msg.includes('cnpj') || msg.includes('empresa')) {
     reply = 'CNPJ para SGV: 17062925000160';
-  } else if (msg.includes('plano') || msg.includes('tv') || msg.includes('canal') || msg.includes('canais')) {
-    showImagesWithDownload([
-      {
-        url: 'images/pacote1.jpg',
-        nome: 'Pacote-TV-Básico.jpg'
-      },
-      {
-        url: 'images/pacote2.jpg',
-        nome: 'Pacote-TV-Premium.jpg'
-      }
-    ]);
-    pendingReply = false;
-    openChatBtn.classList.remove('has-notification');
-    return;
+  } else if (msg.includes('planos') || msg.includes('valores')) {
+    reply = `Planos disponíveis:
+- 📱 36GB POR R$44,9
+- 📱 45GB POR R$59,9
+- 📱 50GB POR R$64,99
+
+Plano adicional:
+10GB Redes Sociais + R$10`;
   } else if (msg.includes('smart')) {
     reply = { type: 'link', text: 'Smart - https://www.smart.com.br', url: 'https://vivovendas.vivo.com.br/sales_ext/start.swe?SWECmd=GotoView&SWEView=NV+Dealer+Home+Page+View&SWERF=1&SWEHo=vivovendas.vivo.com.br&SWEBU=1&SWEApplet0=NV+Sales+Opportunity+List+Applet+-+Home+Page&SWERowId0=8-7IBK00I4' };
     isLinkReply = true;
@@ -236,6 +408,10 @@ function botReply(userMessage) {
   } else {
     reply = 'Desculpe, não posso responder isso ainda! Faça outra pergunta.';
   }
+
+  return reply;
+}
+
 
   const chat = document.getElementById('chatMessages');
   const typingBubble = document.createElement('div');

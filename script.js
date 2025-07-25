@@ -150,7 +150,41 @@ function sendMessage() {
     }
   }, 900);
 
-  botReply(message);
+  // Chama botReply e aguarda a resposta para mostrar "digitando"
+  const reply = botReply(message);
+
+  showTypingAndReply(reply);
+}
+
+function showTypingAndReply(reply) {
+  const chat = document.getElementById('chatMessages');
+
+  // Mostra bolinha de "digitando"
+  const typingBubble = document.createElement('div');
+  typingBubble.classList.add('message', 'bot');
+  typingBubble.innerHTML = `
+    <div class="typing">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  chat.appendChild(typingBubble);
+  chat.scrollTop = chat.scrollHeight;
+
+  // Após 1s remove o typing e mostra a resposta
+  setTimeout(() => {
+    chat.removeChild(typingBubble);
+
+    if (typeof reply === 'string') {
+      addMessage(reply, 'bot');
+    } else if (reply && reply.type === 'link') {
+      addMessage(reply, 'bot');
+    } else {
+      addMessage('Desculpe, não entendi sua pergunta.', 'bot');
+    }
+
+    pendingReply = false;
+    openChatBtn.classList.remove('has-notification');
+  }, 1000);
 }
 
 function addMessage(message, sender) {
@@ -318,8 +352,9 @@ function botReply(userMessage) {
               `CNPJ: ${checklistData.cnpj}\n` +
               `TELEFONE: ${checklistData.telefone}\n` +
               `EMAIL: ${checklistData.email}\n` +
-              `Tipo de Venda: ( ) Número Novo ( ) Portabilidade ( ) Portabilidade c/ Transf. Titularidade ( ) Migração\n`;
+              `Tipo de Venda: `;
 
+      // Marcação do tipo de venda
       const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
       const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
       tipos.forEach(tipo => {
@@ -412,61 +447,7 @@ Plano adicional:
   return reply;
 }
 
-
-  const chat = document.getElementById('chatMessages');
-  const typingBubble = document.createElement('div');
-  typingBubble.classList.add('message', 'bot');
-  typingBubble.innerHTML = `
-    <div class="typing">
-      <span></span><span></span><span></span>
-    </div>
-  `;
-  chat.appendChild(typingBubble);
-  chat.scrollTop = chat.scrollHeight;
-
-  setTimeout(() => {
-    chat.removeChild(typingBubble);
-    if (isLinkReply) {
-      addMessage(reply, 'bot');
-    } else {
-      addMessage(reply, 'bot');
-    }
-    pendingReply = false;
-    openChatBtn.classList.remove('has-notification');
-  }, 1000);
-}
-
-function showImagesWithDownload(images) {
-  const chat = document.getElementById('chatMessages');
-
-  images.forEach(image => {
-    const container = document.createElement('div');
-    container.classList.add('message', 'bot');
-    container.style.flexDirection = 'column';
-
-    const img = document.createElement('img');
-    img.src = image.url;
-    img.alt = image.nome;
-    img.style.maxWidth = '100%';
-    img.style.borderRadius = '10px';
-    img.style.marginBottom = '5px';
-
-    const downloadBtn = document.createElement('a');
-    downloadBtn.href = image.url;
-    downloadBtn.download = image.nome;
-    downloadBtn.textContent = '📥 Baixar imagem';
-    downloadBtn.style.color = '#a5006e';
-    downloadBtn.style.textDecoration = 'underline';
-    downloadBtn.style.fontSize = '14px';
-
-    container.appendChild(img);
-    container.appendChild(downloadBtn);
-    chat.appendChild(container);
-  });
-
-  chat.scrollTop = chat.scrollHeight;
-}
-
+// Botão limpar conversa
 document.getElementById('clearBtn').addEventListener('click', () => {
   document.getElementById('chatMessages').innerHTML = '';
 });

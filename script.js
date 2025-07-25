@@ -111,6 +111,7 @@ const chatContainer = document.getElementById('chatContainer');
 const headerBotIcon = document.querySelector('#chatHeader .headerBotIcon');
 const chatNotification = document.getElementById('chatNotification');
 let pendingReply = false;
+let chatOpenedOnce = false; // controla se a mensagem de boas-vindas já foi exibida
 
 openChatBtn.addEventListener('click', () => {
   const isHidden = chatContainer.classList.contains('hidden');
@@ -119,11 +120,15 @@ openChatBtn.addEventListener('click', () => {
     chatContainer.classList.remove('hidden');
     headerBotIcon.classList.add('glow');
     openChatBtn.classList.remove('has-notification');
+    pendingReply = false; // usuário abriu o chat, não tem notificação pendente
 
-    // Mensagem de boas-vindas sempre que abrir o chat
-    setTimeout(() => {
-      addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
-    }, 300);
+    // Mensagem de boas-vindas só na primeira vez que abrir o chat
+    if (!chatOpenedOnce) {
+      setTimeout(() => {
+        addMessage("Olá, seja bem-vindo ao Chat de Suporte, em que posso te ajudar hoje?", 'bot');
+        chatOpenedOnce = true;
+      }, 300);
+    }
   } else {
     chatContainer.classList.add('hidden');
     headerBotIcon.classList.remove('glow');
@@ -144,15 +149,12 @@ function sendMessage() {
   input.value = '';
   pendingReply = true;
 
-  setTimeout(() => {
-    if (chatContainer.classList.contains('hidden') && pendingReply) {
-      openChatBtn.classList.add('has-notification');
-    }
-  }, 900);
+  // Se o chat estiver fechado e houver mensagem pendente, mostra notificação fixa
+  if (chatContainer.classList.contains('hidden') && pendingReply) {
+    openChatBtn.classList.add('has-notification');
+  }
 
-  // Chama botReply e aguarda a resposta para mostrar "digitando"
   const reply = botReply(message);
-
   showTypingAndReply(reply);
 }
 
@@ -170,7 +172,6 @@ function showTypingAndReply(reply) {
   chat.appendChild(typingBubble);
   chat.scrollTop = chat.scrollHeight;
 
-  // Após 1s remove o typing e mostra a resposta
   setTimeout(() => {
     chat.removeChild(typingBubble);
 
@@ -183,7 +184,9 @@ function showTypingAndReply(reply) {
     }
 
     pendingReply = false;
-    openChatBtn.classList.remove('has-notification');
+    if (!chatContainer.classList.contains('hidden')) {
+      openChatBtn.classList.remove('has-notification');
+    }
   }, 1000);
 }
 
@@ -193,7 +196,6 @@ function addMessage(message, sender) {
   msg.classList.add('message', sender);
 
   if (sender === 'bot' && typeof message === 'object' && message.type === 'link') {
-    // Se for resposta com link, cria link clicável
     const linkEl = document.createElement('a');
     linkEl.href = message.url;
     linkEl.target = '_blank';
@@ -209,7 +211,7 @@ function addMessage(message, sender) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-// Variáveis de controle para os dois fluxos
+// Variáveis e funções para fluxos guiados (confirmação e checklist)
 let creatingConfirmation = false;
 let confirmationStep = 0;
 let confirmationData = {
@@ -237,28 +239,23 @@ let checklistData = {
 function botReply(userMessage) {
   const msg = userMessage.toLowerCase();
   let reply;
-  let isLinkReply = false;
 
-  // Se o usuário escreveu "preencha" mas não "confirmação" nem "checklist", pergunta o que preencher
   if (msg.includes('preencha') && !msg.includes('confirmação') && !msg.includes('checklist')) {
     return 'O que você deseja preencher? Opções:\n1. Confirmação\n2. Checklist móvel';
   }
 
-  // Inicia o fluxo de confirmação
   if (msg.includes('monte') && msg.includes('confirmação')) {
     creatingConfirmation = true;
     confirmationStep = 1;
     return 'Qual o plano contratado? (ex: 6GB +10GB bônus + 20GB bônus)';
   }
 
-  // Inicia o fluxo do checklist móvel direto se digitar só "checklist"
   if (msg.includes('checklist') && !creatingConfirmation) {
     fillingChecklist = true;
     checklistStep = 1;
     return 'Informe o CPF:';
   }
 
-  // Se usuário respondeu à pergunta de qual checklist quer preencher
   if (!creatingConfirmation && !fillingChecklist) {
     if (msg === '1' || msg === 'confirmação') {
       creatingConfirmation = true;
@@ -271,7 +268,6 @@ function botReply(userMessage) {
     }
   }
 
-  // Fluxo guiado: Confirmação
   if (creatingConfirmation) {
     if (confirmationStep === 1) {
       confirmationData.plano = userMessage;
@@ -295,7 +291,6 @@ function botReply(userMessage) {
               `CNPJ: ${confirmationData.cnpj}\n` +
               `Posso confirmar?`;
 
-      // Reset
       creatingConfirmation = false;
       confirmationStep = 0;
       confirmationData = { plano: '', telefone: '', tipo: '', cnpj: '' };
@@ -303,7 +298,6 @@ function botReply(userMessage) {
     return reply;
   }
 
-  // Fluxo guiado: Checklist móvel
   if (fillingChecklist) {
     if (checklistStep === 1) {
       checklistData.cpf = userMessage;
@@ -344,33 +338,31 @@ function botReply(userMessage) {
     } else if (checklistStep === 10) {
       checklistData.quantidadeLinhas = userMessage;
 
-      // Monta o checklist final
-      reply = `Checklist Móvel:\n\n` +
-              `NOME REPRESENTANTE LEGAL:\n` +
-              `CPF: ${checklistData.cpf}\n` +
-              `RG: ${checklistData.rg}\n` +
-              `CNPJ: ${checklistData.cnpj}\n` +
-              `TELEFONE: ${checklistData.telefone}\n` +
-              `EMAIL: ${checklistData.email}\n` +
-              `Tipo de Venda: `;
+      reply = `Checklist Móvel: \n\n` +
+        `NOME REPRESENTANTE LEGAL: \n` +
+        `CPF: ${checklistData.cpf}\n` +
+        `RG: ${checklistData.rg}\n` +
+        `CNPJ: ${checklistData.cnpj}\n` +
+        `TELEFONE : ${checklistData.telefone}\n` +
+        `EMAIL : ${checklistData.email}\n` +
+        `Tipo de Venda: `;
 
-      // Marcação do tipo de venda
-      const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
-      const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
-      tipos.forEach(tipo => {
-        const marcado = tipo.toLowerCase() === tipoMinusculo ? 'x' : ' ';
-        reply += `(${marcado}) ${tipo} `;
-      });
+// Monta os tipos de venda marcando o correto com "x"
+const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
+const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
+tipos.forEach(tipo => {
+  const marcado = tipo.toLowerCase() === tipoMinusculo ? 'x' : ' ';
+  reply += `(${marcado}) ${tipo} `;
+});
 
-      reply += `\n\nCLIENTE CIENTE DA COMPRA DO CHIP: SIM (x) NÃO ()\n\n` +
-               `Número da(s) linha(s): ${checklistData.numeroLinha}\n` +
-               `Plano: ${checklistData.plano}\n` +
-               `Valor: ${checklistData.valor}\n\n` +
-               `Quantidade de Linha(s): ${checklistData.quantidadeLinhas}\n` +
-               `Campanha: AVULSO\n` +
-               `Vencimento: 26`;
+reply += `\n\nCLIENTE CIENTE DA COMPRA DO CHIP: SIM (x) NÃO ()\n\n` +
+         `Número da(s) linha(s): ${checklistData.numeroLinha}\n` +
+         `Plano: ${checklistData.plano}\n` +
+         `Valor: ${checklistData.valor}\n\n` +
+         `Quantidade de Linha(s): ${checklistData.quantidadeLinhas}\n` +
+         `Campanha: AVULSO\n` +
+         `Vencimento: 26`;
 
-      // Reset
       fillingChecklist = false;
       checklistStep = 0;
       checklistData = {
@@ -385,69 +377,37 @@ function botReply(userMessage) {
         valor: '',
         quantidadeLinhas: ''
       };
+      return reply;
     }
     return reply;
   }
 
-  // Perguntas e respostas fixas comuns do seu chatbot
-  if (msg.includes('oi') || msg.includes('olá') || msg.includes('opa')) {
-    reply = 'Olá! Como posso ajudar você hoje?';
-  } else if (msg.includes('tudo bem') || msg.includes('como vai')) {
-    reply = 'Estou bem, obrigado! E você?';
-  } else if (msg.includes('que dia é hoje') || msg.includes('data de hoje')) {
-    const hoje = new Date();
-    reply = `Hoje é dia ${hoje.toLocaleDateString('pt-BR', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    })}.`;
-  } else if (msg.includes('quantos graus') || msg.includes('temperatura') || msg.includes('tempo')) {
-    reply = 'Desculpe, não tenho acesso à temperatura atual, mas posso ajudar em outras dúvidas!';
-  } else if (msg.includes('586')) {
-    reply = 'É quando o endereço não foi cadastrado no smart, é comum acontecer quando a casa é nova ou se as últimas fotos no Google forem antigas.';
-  } else if (msg.includes('mundial') || msg.includes('palmeiras')) {
-    reply = 'Não, o Palmeiras não tem mundial. 51 é pinga!';
-  } else if (msg.includes('móvel') || msg.includes('movel')) {
-    reply = 'O móvel se tiver vendido a fibra, pode subir os dois juntos no sgv...';
-  } else if (msg.includes('spam') || msg.includes('bloqueio')) {
-    reply = 'O bloqueio de spam serve para bloquear números que ligam com frequência...';
-  } else if (msg.includes('dados') || msg.includes('documentos') || msg.includes('informações') || msg.includes('fechamento')) {
-    reply = `Para portabilidade eu só preciso:\n
-- foto do documento RG ou CNH do responsável da linha e do CNPJ\n
-- fatura do plano atual\n
-- email para enviar o contrato`;
-  } else if (msg.includes('fidelidade') || msg.includes('multa') || msg.includes('carencia')) {
-    reply = 'Temos fidelidade de 24 meses, mas há exceções para cancelamento.';
-  } else if (msg.includes('comissão')) {
-    reply = 'Comissões: 12 vendas = R$600, 18 = R$2.340, 21 = R$3.150, 26+ = R$4.940+';
-  } else if (msg.includes('cnpj') || msg.includes('empresa')) {
-    reply = 'CNPJ para SGV: 17062925000160';
-  } else if (msg.includes('planos') || msg.includes('valores')) {
-    reply = `Planos disponíveis:
-- 📱 36GB POR R$44,9
-- 📱 45GB POR R$59,9
-- 📱 50GB POR R$64,99
-
-Plano adicional:
-10GB Redes Sociais + R$10`;
-  } else if (msg.includes('smart')) {
-    reply = { type: 'link', text: 'Smart - https://www.smart.com.br', url: 'https://vivovendas.vivo.com.br/sales_ext/start.swe?SWECmd=GotoView&SWEView=NV+Dealer+Home+Page+View&SWERF=1&SWEHo=vivovendas.vivo.com.br&SWEBU=1&SWEApplet0=NV+Sales+Opportunity+List+Applet+-+Home+Page&SWERowId0=8-7IBK00I4' };
-    isLinkReply = true;
-  } else if (msg.includes('callix')) {
-    reply = { type: 'link', text: 'Callix - https://www.callix.com.br', url: 'https://jrservicos.callix.com.br/login' };
-    isLinkReply = true;
-  } else if (msg.includes('simplifique')) {
-    reply = { type: 'link', text: 'Simplifique - https://www.simplifique.com.br', url: 'https://autenticaint.vivo.com.br/LoginCorp/?bmctx=D3346598D37D25323F24C459B0AA627D72F11002ACA4C6E5F0DC260DDCE7E518&contextType=external&username=string&challenge_topaz=true&challenge_url=https%3A%2F%2Fautenticaint.vivo.com.br%2FLoginCorp%2F&password=secure_string&request_id=-1918812876242615029&authn_try_count=0&locale=pt_BR&resource_url=https%253A%252F%252Fautenticaint.vivo.com.br%252Fms_oauth%252Foauth2%252Fui%252Fvivooauthservice%252Fshowconsent%253Fresponse_type%253Dcode%2526client_id%253D5598f3b889dbd39d9320bfb08954ead8%2526redirect_uri%253Dhttps%25253A%25252F%25252Fsimplifiquevivoemp.com.br%25252Foauth-telefonica.aspx%2526scope%253DSIMPLIFIQUEProfile.me%2526oracle_client_name%253DSIMPLIFIQUE' };
-    isLinkReply = true;
-  } else if (msg.includes('infob2b')) {
-    reply = { type: 'link', text: 'Infob2b - https://www.infob2b.com.br', url: 'https://autenticaint.vivo.com.br/LoginCorp/?bmctx=3125F162882003CD1627B3AE727AEEB366CA6E0DA885B6042DEAF37E3B3193DA&contextType=external&username=string&challenge_topaz=true&challenge_url=https%3A%2F%2Fautenticaint.vivo.com.br%2FLoginCorp%2F&password=secure_string&request_id=-1278206927163946539&authn_try_count=0&locale=pt_BR&resource_url=https%253A%252F%252Fautenticaint.vivo.com.br%252Fms_oauth%252Foauth2%252Fui%252Fvivooauthservice%252Fshowconsent%253Fresponse_type%253Dcode%2526client_id%253D7631b26b13f248ec932bab0b7ac653f3%2526redirect_uri%253Dhttps%25253A%25252F%25252Fwww.portalinfob2b.com.br%25252Flogin%2526scope%253DAPIManager.Default%252BPortalInfoB2B.Default%2526oracle_client_name%253DPortalInfoB2B' };
-    isLinkReply = true;
-  } else {
-    reply = 'Desculpe, não posso responder isso ainda! Faça outra pergunta.';
+  // Perguntas genéricas
+  if (msg.includes('oi') || msg.includes('olá') || msg.includes('ola') || msg.includes('bom dia') || msg.includes('boa tarde') || msg.includes('boa noite')) {
+    return 'Olá! Como posso ajudar você hoje?';
+  }
+  if (msg.includes('tudo bem')) {
+    return 'Tudo ótimo, obrigado por perguntar! E você?';
+  }
+  if (msg.includes('que dia é hoje')) {
+    const today = new Date();
+    return `Hoje é dia ${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}`;
+  }
+  if (msg.includes('quantos') && msg.includes('você')) {
+    return 'Eu posso responder suas perguntas e ajudar com confirmações e checklists!';
   }
 
-  return reply;
+  return 'Desculpe, não entendi sua pergunta.';
 }
 
-// Botão limpar conversa
+// Limpar chat
 document.getElementById('clearBtn').addEventListener('click', () => {
   document.getElementById('chatMessages').innerHTML = '';
+  // Reseta estados de fluxos
+  creatingConfirmation = false;
+  confirmationStep = 0;
+  fillingChecklist = false;
+  checklistStep = 0;
+  pendingReply = false;
+  openChatBtn.classList.remove('has-notification');
 });

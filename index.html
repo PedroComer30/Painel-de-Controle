@@ -84,25 +84,25 @@
     </div>
 
    <button id="openChatBtn" title="Abrir Chat" aria-label="Abrir Chat">
-    <svg xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 0 24 24" width="34" fill="white">
-      <path d="M4 4h16v12H5.17L4 17.17V4z" fill="none"/>
-      <path d="M20 2H4a2 2 0 0 0-2 2v17l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM4 16.17L2.83 18H4v-1.83z"/>
-    </svg>
-    <div id="chatNotification"></div>
-  </button>
+  <svg xmlns="http://www.w3.org/2000/svg" height="34" viewBox="0 0 24 24" width="34" fill="white">
+    <path d="M4 4h16v12H5.17L4 17.17V4z" fill="none"/>
+    <path d="M20 2H4a2 2 0 0 0-2 2v17l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM4 16.17L2.83 18H4v-1.83z"/>
+  </svg>
+  <div id="chatNotification"></div>
+</button>
 
-  <div id="chatContainer" class="hidden">
-    <div id="chatHeader">
-      <div class="headerBotIcon"></div>
-      <span>Chatbot</span>
-    </div>
-    <div id="chatMessages"></div>
-    <div id="chatInputArea">
-      <input type="text" id="userInput" placeholder="Digite sua mensagem..." />
-      <button id="sendBtn">Enviar</button>
-      <button id="clearBtn" title="Limpar chat">🗑️</button>
-    </div>
+<div id="chatContainer" class="hidden">
+  <div id="chatHeader">
+    <div class="headerBotIcon"></div>
+    <span>Chatbot</span>
   </div>
+  <div id="chatMessages"></div>
+  <div id="chatInputArea">
+    <input type="text" id="userInput" placeholder="Digite sua mensagem..." autocomplete="off" />
+    <button id="sendBtn">Enviar</button>
+    <button id="clearBtn" title="Limpar chat">🗑️</button>
+  </div>
+</div>
 
     <footer>
       <ul>

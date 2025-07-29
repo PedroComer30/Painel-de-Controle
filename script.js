@@ -215,15 +215,17 @@ function addMessage(message, sender) {
 let creatingConfirmation = false;
 let confirmationStep = 0;
 let confirmationData = {
+  portabilidades: '',
+  numerosPlano: '',
   plano: '',
-  telefone: '',
-  tipo: '',
+  valor: '',
   cnpj: ''
 };
 
 let fillingChecklist = false;
 let checklistStep = 0;
 let checklistData = {
+  nomeRepresentante: '',
   cpf: '',
   rg: '',
   cnpj: '',
@@ -247,99 +249,115 @@ function botReply(userMessage) {
   if (msg.includes('monte') && msg.includes('confirmação')) {
     creatingConfirmation = true;
     confirmationStep = 1;
-    return 'Qual o plano contratado? (ex: 6GB +10GB bônus + 20GB bônus)';
+    return 'Quantas portabilidades:';
   }
 
   if (msg.includes('checklist') && !creatingConfirmation) {
     fillingChecklist = true;
     checklistStep = 1;
-    return 'Informe o CPF:';
+    return 'Informe o Nome do representante legal:';
   }
 
   if (!creatingConfirmation && !fillingChecklist) {
     if (msg === '1' || msg === 'confirmação') {
       creatingConfirmation = true;
       confirmationStep = 1;
-      return 'Qual o plano contratado? (ex: 6GB +10GB bônus + 20GB bônus)';
+      return 'Quantas portabilidades:';
     } else if (msg === '2' || msg === 'checklist móvel') {
       fillingChecklist = true;
       checklistStep = 1;
-      return 'Informe o CPF:';
+      return 'Informe o Nome do representante legal:';
     }
   }
 
   if (creatingConfirmation) {
     if (confirmationStep === 1) {
-      confirmationData.plano = userMessage;
-      reply = 'Qual o número de telefone? (ex: 11 91234-5678)';
+      confirmationData.portabilidades = userMessage; // Quantas portabilidades
+      reply = 'Número(s) do plano:';
       confirmationStep++;
     } else if (confirmationStep === 2) {
-      confirmationData.telefone = userMessage;
-      reply = 'Qual o tipo? (Ex: Portabilidade)';
+      confirmationData.numerosPlano = userMessage; // Número(s) do plano
+      reply = 'Plano contratado:';
       confirmationStep++;
     } else if (confirmationStep === 3) {
-      confirmationData.tipo = userMessage;
-      reply = 'Informe o CNPJ:';
+      confirmationData.plano = userMessage; // Plano contratado
+      reply = 'Valor:';
       confirmationStep++;
     } else if (confirmationStep === 4) {
-      confirmationData.cnpj = userMessage;
+      confirmationData.valor = userMessage; // Valor
+      reply = 'Informe o CNPJ:';
+      confirmationStep++;
+    } else if (confirmationStep === 5) {
+      confirmationData.cnpj = userMessage; // CNPJ
+
       reply = `Só confirmando o plano contratado é:\n` +
-              `1 ${confirmationData.tipo.toUpperCase()} nos números ${confirmationData.telefone} com plano de ${confirmationData.plano}\n` +
-              `VALOR: 39,99\n\n` +
-              `Vai ser feita a contratação de uma *${confirmationData.tipo.toUpperCase()}*\n\n` +
+              `${confirmationData.portabilidades} PORTABILIDADES nos números ${confirmationData.numerosPlano} com plano de ${confirmationData.plano}\n` +
+              `VALOR: ${confirmationData.valor}\n` +
+              `Vai ser feita a contratação de ${confirmationData.portabilidades} *PORTABILIDADE*\n\n` +
               `Você está ciente que é necessário efetuar a compra do chip para fazer a ativação?\n\n` +
               `CNPJ: ${confirmationData.cnpj}\n` +
               `Posso confirmar?`;
 
+      // Resetar os dados e o fluxo
       creatingConfirmation = false;
       confirmationStep = 0;
-      confirmationData = { plano: '', telefone: '', tipo: '', cnpj: '' };
+      confirmationData = {
+        portabilidades: '',
+        numerosPlano: '',
+        plano: '',
+        valor: '',
+        cnpj: ''
+      };
     }
     return reply;
   }
 
   if (fillingChecklist) {
     if (checklistStep === 1) {
+      checklistData.nomeRepresentante = userMessage;
+      reply = 'Informe o CPF:';
+      checklistStep++;
+    } else if (checklistStep === 2) {
       checklistData.cpf = userMessage;
       reply = 'Informe o RG:';
       checklistStep++;
-    } else if (checklistStep === 2) {
+    } else if (checklistStep === 3) {
       checklistData.rg = userMessage;
       reply = 'Informe o CNPJ:';
       checklistStep++;
-    } else if (checklistStep === 3) {
+    } else if (checklistStep === 4) {
       checklistData.cnpj = userMessage;
       reply = 'Informe o telefone:';
       checklistStep++;
-    } else if (checklistStep === 4) {
+    } else if (checklistStep === 5) {
       checklistData.telefone = userMessage;
       reply = 'Informe o email:';
       checklistStep++;
-    } else if (checklistStep === 5) {
+    } else if (checklistStep === 6) {
       checklistData.email = userMessage;
       reply = 'Qual o tipo de venda? (ex: Número Novo, Portabilidade, Portabilidade c/ Transf. Titularidade, Migração)';
       checklistStep++;
-    } else if (checklistStep === 6) {
+    } else if (checklistStep === 7) {
       checklistData.tipoVenda = userMessage;
       reply = 'Número da linha:';
       checklistStep++;
-    } else if (checklistStep === 7) {
+    } else if (checklistStep === 8) {
       checklistData.numeroLinha = userMessage;
       reply = 'Plano:';
       checklistStep++;
-    } else if (checklistStep === 8) {
+    } else if (checklistStep === 9) {
       checklistData.plano = userMessage;
       reply = 'Valor:';
       checklistStep++;
-    } else if (checklistStep === 9) {
+    } else if (checklistStep === 10) {
       checklistData.valor = userMessage;
       reply = 'Quantidade de linhas:';
       checklistStep++;
-    } else if (checklistStep === 10) {
+    } else if (checklistStep === 11) {
       checklistData.quantidadeLinhas = userMessage;
 
       reply = `Checklist Móvel: \n\n` +
-        `NOME REPRESENTANTE LEGAL: \n` +
+        `NOME REPRESENTANTE LEGAL: ${checklistData.nomeRepresentante}\n` +
         `CPF: ${checklistData.cpf}\n` +
         `RG: ${checklistData.rg}\n` +
         `CNPJ: ${checklistData.cnpj}\n` +
@@ -347,25 +365,26 @@ function botReply(userMessage) {
         `EMAIL : ${checklistData.email}\n` +
         `Tipo de Venda: `;
 
-// Monta os tipos de venda marcando o correto com "x"
-const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
-const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
-tipos.forEach(tipo => {
-  const marcado = tipo.toLowerCase() === tipoMinusculo ? 'x' : ' ';
-  reply += `(${marcado}) ${tipo} `;
-});
+      // Monta os tipos de venda marcando o correto com "x"
+      const tipos = ["Número Novo", "Portabilidade", "Portabilidade c/ Transf. Titularidade", "Migração"];
+      const tipoMinusculo = checklistData.tipoVenda.toLowerCase();
+      tipos.forEach(tipo => {
+        const marcado = tipo.toLowerCase() === tipoMinusculo ? 'x' : ' ';
+        reply += `(${marcado}) ${tipo} `;
+      });
 
-reply += `\n\nCLIENTE CIENTE DA COMPRA DO CHIP: SIM (x) NÃO ()\n\n` +
-         `Número da(s) linha(s): ${checklistData.numeroLinha}\n` +
-         `Plano: ${checklistData.plano}\n` +
-         `Valor: ${checklistData.valor}\n\n` +
-         `Quantidade de Linha(s): ${checklistData.quantidadeLinhas}\n` +
-         `Campanha: AVULSO\n` +
-         `Vencimento: 26`;
+      reply += `\n\nCLIENTE CIENTE DA COMPRA DO CHIP: SIM (x) NÃO ()\n\n` +
+               `Número da(s) linha(s): ${checklistData.numeroLinha}\n` +
+               `Plano: ${checklistData.plano}\n` +
+               `Valor: ${checklistData.valor}\n\n` +
+               `Quantidade de Linha(s): ${checklistData.quantidadeLinhas}\n` +
+               `Campanha: AVULSO\n` +
+               `Vencimento: 26`;
 
       fillingChecklist = false;
       checklistStep = 0;
       checklistData = {
+        nomeRepresentante: '',
         cpf: '',
         rg: '',
         cnpj: '',
@@ -410,4 +429,10 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   checklistStep = 0;
   pendingReply = false;
   openChatBtn.classList.remove('has-notification');
+});
+
+// Botão para aumentar/reduzir tamanho do chat
+const toggleSizeBtn = document.getElementById('toggleSizeBtn');
+toggleSizeBtn.addEventListener('click', () => {
+  chatContainer.classList.toggle('large');
 });

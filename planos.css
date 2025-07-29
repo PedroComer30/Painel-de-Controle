@@ -125,8 +125,8 @@ li {
         background-color: rgb(97, 0, 189);
         padding: 8px;
         border-radius: 25px;
-        width: 220px;
-        height: 35px;
+        width: 270px;
+        height: 40px;
         text-align: center;
 }
 
@@ -139,8 +139,8 @@ li {
 }
 
 .iconnet {
-        width: 150px;
-        height: 150px;
+        width: 190px;
+        height: 250px;
 }
 
 .tv:hover {
@@ -169,8 +169,8 @@ li {
         background-color: rgb(97, 0, 189);
         padding: 8px;
         border-radius: 25px;
-        width: 220px;
-        height: 35px;
+        width: 270px;
+        height: 40px;
         text-align: center;
 }
 
@@ -183,8 +183,8 @@ li {
 }
 
 .iconnet {
-        width: 100px;
-        height: 100px;
+        width: 190px;
+        height: 250px;
 }
 
 .vivo-total:hover {

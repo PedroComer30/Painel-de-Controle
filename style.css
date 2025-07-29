@@ -326,6 +326,22 @@ ul {
   display: none !important;
 }
 
+/* Classe para chat grande */
+/* Quando o chat tiver a classe .large, ocupa toda a tela */
+#chatContainer.large {
+  width: 100vw !important;
+  height: 100vh !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  border-radius: 0 !important;
+  max-height: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: flex;
+  flex-direction: column;
+}
+
+
 /* Cabeçalho */
 #chatHeader {
   background: #40064e;
@@ -429,6 +445,32 @@ ul {
 #clearBtn:hover {
   background: #c82333;
 }
+
+/* Botão aumentar/reduzir no cabeçalho */
+#chatHeader {
+  position: relative;
+}
+
+.toggleSizeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggleSizeBtn svg {
+  display: block;
+}
+.toggleSizeBtn:hover svg {
+  stroke: #ff69b4; /* cor rosa ao passar mouse para destacar */
+}
+
 
 /* Input e botões */
 #chatInputArea {
